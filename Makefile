@@ -14,15 +14,18 @@ endif
 #LIBS += -DSINGLE_PREC
 
 # Settings for OpenMP (comment the following line to disable OpenMP)
-LIBS += -DOMP -fopenmp -lfftw3_omp
+LIBS += -DOMP -fopenmp #-lfftw3_omp
 
 # Settings for CFITSIO (not implemented yet)
 
 SRCS = $(wildcard src/*.c lib/*.c io/*.c math/*.c)
-EXEC = POWSPEC
 
-all:
-	$(CC) $(CFLAGS) -o $(EXEC) $(SRCS) $(LIBS) $(INCL)
+libpowspec_f:
+	$(CC) $(CFLAGS) -fPIC -shared -o libpowspec_f.so $(SRCS) $(LIBS) -DSINGLE_PREC $(INCL)
+libpowspec:
+	$(CC) $(CFLAGS) -fPIC -shared -o libpowspec_f.so $(SRCS) $(LIBS) $(INCL)
 
 clean:
-	rm $(EXEC)
+	rm libpowspec.so libpowspec_f.so
+install:
+	mv libpowspec*so $prefix
