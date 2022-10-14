@@ -23,7 +23,7 @@ SRCS = $(wildcard src/*.c lib/*.c io/*.c math/*.c)
 libpowspec_f:
 	$(CC) $(CFLAGS) -fPIC -shared -o libpowspec_f.so $(SRCS) $(LIBS) -DSINGLE_PREC $(INCL)
 libpowspec:
-	$(CC) $(CFLAGS) -fPIC -shared -o libpowspec_f.so $(SRCS) $(LIBS) $(INCL)
+	$(CC) $(CFLAGS) -fPIC -shared -o libpowspec.so $(SRCS) $(LIBS) $(INCL)
 
 clean:
 	rm libpowspec.so libpowspec_f.so
