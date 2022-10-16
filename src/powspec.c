@@ -20,19 +20,58 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+
+DATA* build_catalog_sim(size_t ndata, double* sumw2, double* wdata, double* data_x, double* data_y, double* data_z, double* data_w){
+  DATA* output = malloc(sizeof(DATA) * ndata);
+  for (int i = 0; i < ndata; i++){
+    output[i].x[0] = data_x[i];
+    output[i].x[1] = data_y[i];
+    output[i].x[2] = data_z[i];
+    output[i].w = data_w[i];
+    wdata[0] += data_w[i];
+  }
+  return output;
+}
+
+DATA* build_catalog_lc(size_t ndata, double* sumw2, double* wdata, double* data_x, double* data_y, double* data_z, double* data_w, double* data_fkp, double* data_nz){
+  DATA* output = malloc(sizeof(DATA) * ndata);
+  double w;
+   
+  for (int i = 0; i < ndata; i++){
+    w = data_w[i] * data_fkp[i];
+    output[i].x[0] = data_x[i];
+    output[i].x[1] = data_y[i];
+    output[i].x[2] = data_z[i];
+    output[i].w = data_w[i];
+    wdata[0] += data_w[i];
+    sumw2[0] += w * w;
+    sumw2[1] += data_w[i] * data_fkp[i] * data_fkp[i] * data_nz[i];
+  }
+  return output;
+}
+
+
+
+
+
 PK *compute_pk(CATA *cata, bool save_out, bool has_randoms, int argc, char *argv[]) {
   //printf("The following arguments were passed to main():\n");
   //printf("argnum \t value \n");
   //for (int i = 0; i<argc; i++) printf("%d \t %s \n", i, argv[i]);
   //printf("\n");
 
+  printf("%lf\n", cata->data[0][5].x[0]);
+  printf("%lf\n", cata->data[0][5].x[1]);
+  printf("%lf\n", cata->data[0][5].x[2]);
+  printf("%lf\n", cata->data[0][5].w);
+  printf("%lf\n", cata->wdata[0]);
   CONF *conf;
   if (!(conf = load_conf(argc, argv))) {
     printf(FMT_FAIL);
     P_EXT("failed to load configuration parameters\n");
     return NULL;
   }
-
+  
   conf->ndata = cata->num; // Trigger XPk computation even if not saved
   if (cata->rand != NULL){
     conf->has_randoms = has_randoms;

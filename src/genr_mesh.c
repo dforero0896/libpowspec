@@ -512,6 +512,7 @@ static int def_box(const CATA *cat, const bool issim, const double *bsize,
   double min[3];
   
   /* Obtain the boundaries of the input catalogs. */
+  printf("TEST\n"); fflush(stdout);
   get_coord_bound(cat, min, max);
   const char c[3] = {'x', 'y', 'z'};
 
@@ -891,7 +892,7 @@ MESH *genr_mesh(const CONF *conf, CATA *cat) {
     P_ERR("catalogs not read\n");
     return NULL;
   }
-  printf("TEST\n"); fflush(stdout);
+  
   /* Initialise the meshes. */
   MESH *mesh = mesh_init(conf);
   if (!mesh) {
@@ -899,7 +900,7 @@ MESH *genr_mesh(const CONF *conf, CATA *cat) {
     return NULL;
   }
   
-
+  
   /* Define the box. */
   if (def_box(cat, conf->issim, conf->bsize, conf->bpad, mesh->bsize,
         mesh->min, mesh->max, conf->verbose))
