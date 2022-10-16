@@ -3,29 +3,27 @@ CFLAGS = -std=c99 -O3 -Wall
 LIBS = -lm -lfftw3
 INCL = -Isrc -Iio -Ilib -Imath
 
+
+LIBS = -DOMP -fopenmp #-lfftw3_omp
 # Settings for FFTW
-FFTW_DIR = 
-ifneq ($(FFTW_DIR),)
-  LIBS += -L$(FFTW_DIR)/lib
-  INCL += -I$(FFTW_DIR)/include
-endif
+#FFTW_DIR = /opt/cray/pe/fftw/3.3.8.4/$(CRAY_CPU_TARGET)/lib
+LIBS += -L$(FFTW_DIR)
+INCL += -I$(FFTW_DIR)/../include
 
 # Setting for single precision density fields and FFT
 #LIBS += -DSINGLE_PREC
 
 # Settings for OpenMP (comment the following line to disable OpenMP)
-LIBS += -DOMP -fopenmp #-lfftw3_omp
 
 # Settings for CFITSIO (not implemented yet)
 
 SRCS = $(wildcard src/*.c lib/*.c io/*.c math/*.c)
 
 libpowspec_f:
-	$(CC) $(CFLAGS) -fPIC -shared -o libpowspec_f.so $(SRCS) $(LIBS) -DSINGLE_PREC $(INCL)
+	$(CC) $(CFLAGS) -pthread -fPIC -shared -o libpowspec_f.so $(SRCS) -lm -lfftw3f -lfftw3f_omp $(LIBS) -DSINGLE_PREC $(INCL) 
 libpowspec:
-	$(CC) $(CFLAGS) -fPIC -shared -o libpowspec.so $(SRCS) $(LIBS) $(INCL)
+	$(CC) $(CFLAGS) -pthread -fPIC -shared -o libpowspec.so $(SRCS) -lm -lfftw3 -lfftw3_omp $(LIBS) $(INCL)
 
 clean:
 	rm libpowspec.so libpowspec_f.so
-install:
-	mv libpowspec*so $prefix
+
