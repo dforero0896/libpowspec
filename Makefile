@@ -20,9 +20,9 @@ INCL += -I$(FFTW_DIR)/../include
 SRCS = $(wildcard src/*.c lib/*.c io/*.c math/*.c)
 
 libpowspec_f:
-	$(CC) $(CFLAGS) -pthread -fPIC -shared -o libpowspec_f.so $(SRCS) -lm -lfftw3f -lfftw3f_omp $(LIBS) -DSINGLE_PREC $(INCL) 
+	$(CC) $(CFLAGS) -pthread -fPIC -shared -o libpowspec_f.so $(SRCS) -lm -lfftw3f $(LIBS) -DSINGLE_PREC $(INCL) 
 libpowspec:
-	$(CC) $(CFLAGS) -pthread -fPIC -shared -o libpowspec.so $(SRCS) -lm -lfftw3 -lfftw3_omp $(LIBS) $(INCL)
+	$(CC) $(CFLAGS) -pthread -fPIC -shared -o libpowspec.so $(SRCS) -lm -lfftw3 $(LIBS) $(INCL)
 
 clean:
 	rm libpowspec.so libpowspec_f.so
