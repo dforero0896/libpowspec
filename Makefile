@@ -7,8 +7,12 @@ INCL = -Isrc -Iio -Ilib -Imath
 LIBS = -DOMP -fopenmp #-lfftw3_omp
 # Settings for FFTW
 #FFTW_DIR = /opt/cray/pe/fftw/3.3.8.4/$(CRAY_CPU_TARGET)/lib
-LIBS += -L$(FFTW_DIR)
-INCL += -I$(FFTW_DIR)/../include
+#FFTW_DIR = 
+ifneq ($(FFTW_DIR),)
+  LIBS += -L$(FFTW_DIR)
+	INCL += -I$(FFTW_DIR)/../include
+endif
+
 
 # Setting for single precision density fields and FFT
 #LIBS += -DSINGLE_PREC
