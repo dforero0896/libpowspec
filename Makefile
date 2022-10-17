@@ -28,6 +28,11 @@ libpowspec_f:
 libpowspec:
 	$(CC) $(CFLAGS) -pthread -fPIC -shared -o libpowspec.so $(SRCS) -lm -lfftw3 $(LIBS) $(INCL)
 
+libpowspec_f_omp:
+	$(CC) $(CFLAGS) -pthread -fPIC -shared -o libpowspec_f.so $(SRCS) -lm -lfftw3f -lfftw3f_omp $(LIBS) -DSINGLE_PREC $(INCL) 
+libpowspec_omp:
+	$(CC) $(CFLAGS) -pthread -fPIC -shared -o libpowspec.so $(SRCS) -lm -lfftw3 -lfftw3_omp $(LIBS) $(INCL)
+
 clean:
 	rm libpowspec.so libpowspec_f.so
 

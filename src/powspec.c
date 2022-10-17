@@ -42,7 +42,7 @@ DATA* build_catalog_lc(size_t ndata, double* sumw2, double* wdata, double* data_
     output[i].x[0] = data_x[i];
     output[i].x[1] = data_y[i];
     output[i].x[2] = data_z[i];
-    output[i].w = data_w[i];
+    output[i].w = w;
     wdata[0] += data_w[i];
     sumw2[0] += w * w;
     sumw2[1] += data_w[i] * data_fkp[i] * data_fkp[i] * data_nz[i];
@@ -51,20 +51,39 @@ DATA* build_catalog_lc(size_t ndata, double* sumw2, double* wdata, double* data_
 }
 
 
+void copy_pk_results(PK *pk, double *k, double *kavg, double *kmin, double *kmax, int *nmodes, double *auto_multipole1, double *auto_multipole2, double *cross_multipole){
+  int idx;
+  for (int i = 0; i < pk->nbin; i++){
+    k[i] = pk->k[i];
+    kavg[i] = pk->km[i];
+    kmin[i] = pk->kedge[i];
+    kmax[i] = pk->kedge[i+1];
+    nmodes[i] = (int) pk->cnt[i];
+    for (int j = 0; j < pk->nl; j++){
+      idx = j + pk->nl*i;
+      if (auto_multipole1){
+        auto_multipole1[idx] = pk->pl[0][j][i];
+      }
+      if (auto_multipole2){
+        auto_multipole2[idx] = pk->pl[1][j][i];
+      }
+
+      if (cross_multipole){
+        cross_multipole[idx] = pk->xpl[j][i];
+      }
+    }
+
+  }
+}
 
 
-
-PK *compute_pk(CATA *cata, bool save_out, bool has_randoms, int argc, char *argv[]) {
+PK *compute_pk(CATA *cata, bool save_out, bool has_randoms, int *int_cache, int argc, char *argv[]) {
   //printf("The following arguments were passed to main():\n");
   //printf("argnum \t value \n");
   //for (int i = 0; i<argc; i++) printf("%d \t %s \n", i, argv[i]);
   //printf("\n");
 
-  printf("%lf\n", cata->data[0][5].x[0]);
-  printf("%lf\n", cata->data[0][5].x[1]);
-  printf("%lf\n", cata->data[0][5].x[2]);
-  printf("%lf\n", cata->data[0][5].w);
-  printf("%lf\n", cata->wdata[0]);
+
   CONF *conf;
   if (!(conf = load_conf(argc, argv))) {
     printf(FMT_FAIL);
@@ -108,6 +127,8 @@ PK *compute_pk(CATA *cata, bool save_out, bool has_randoms, int argc, char *argv
   //  
   //}
 
+   int_cache[0] = pk->nbin;
+   int_cache[1] = pk->nl;
 
    if (save_out && save_res(conf, cata, mesh, pk)) {
      printf(FMT_FAIL);
