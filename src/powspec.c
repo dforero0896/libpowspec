@@ -78,10 +78,10 @@ void copy_pk_results(PK *pk, double *k, double *kavg, double *kmin, double *kmax
 
 
 PK *compute_pk(CATA *cata, bool save_out, bool has_randoms, int *int_cache, int argc, char *argv[]) {
-  //printf("The following arguments were passed to main():\n");
-  //printf("argnum \t value \n");
-  //for (int i = 0; i<argc; i++) printf("%d \t %s \n", i, argv[i]);
-  //printf("\n");
+  printf("The following arguments were passed to compute_pk():\n");
+  printf("argnum \t value \n");
+  for (int i = 0; i<argc; i++) printf("%d \t %s \n", i, argv[i]);
+  printf("\n");
 
 
   CONF *conf;
